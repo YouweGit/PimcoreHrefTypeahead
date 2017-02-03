@@ -20,6 +20,6 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
         return true;
     }
     public static function getTranslationFile($language) {
-        return '/HrefTypeahead/config/texts/en.csv';
+        return '/PimcoreHrefTypeahead/config/texts/en.csv';
     }
 }
