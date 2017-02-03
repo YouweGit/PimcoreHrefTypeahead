@@ -6,7 +6,7 @@ use Pimcore\Model\Element\AbstractElement;
 use Pimcore\Model\Object;
 use Pimcore\Model\Object\ClassDefinition\Data\HrefTypeahead;
 
-class HrefTypeahead_SearchController extends \Pimcore\Controller\Action\Admin
+class PimcoreHrefTypeahead_SearchController extends \Pimcore\Controller\Action\Admin
 {
 
     /**
