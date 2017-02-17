@@ -136,7 +136,9 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
         this.component.on('change', function (combobox, newValue, oldValue) {
             var newRecord = combobox.findRecordByValue(newValue);
             if (newRecord) {
-                this.dataChanged = true;
+                if (newValue !== oldValue) {
+                    this.dataChanged = true;
+                }
                 this.data.id = newRecord.data.id;
                 this.data.type = newRecord.data.type;
                 this.data.subtype = newRecord.data.subtype;
@@ -186,6 +188,19 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
         return this.composite;
     },
 
+    getLayoutShowItems: function () {
+        var items = [this.component];
+
+        // In read-only mode we don`t need the pen if value is empty
+        if (this.data.id) {
+            items.push({
+                xtype: "button",
+                iconCls: "pimcore_icon_edit",
+                handler: this.openElement.bind(this)
+            })
+        }
+        return items;
+    },
 
     getLayoutShow: function () {
 
@@ -214,11 +229,7 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
 
         this.composite = Ext.create('Ext.form.FieldContainer', {
             layout: 'hbox',
-            items: [this.component, {
-                xtype: "button",
-                iconCls: "pimcore_icon_edit",
-                handler: this.openElement.bind(this)
-            }],
+            items: this.getLayoutShowItems(),
             componentCls: "object_field",
             border: false,
             style: {
@@ -239,6 +250,7 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
                                 var json = Ext.decode(response.responseText);
                                 var result = json.data.first();
                                 if (result && result.display) {
+                                    // Don't worry about dirty state, Ext will always return false if the element is disabled
                                     this.component.setValue(result.display)
                                 }
                             }.bind(this)
@@ -279,20 +291,23 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
      * @param {boolean} dataChanged
      */
     changeData: function (hrefObject, dataChanged) {
-
-        if (typeof dataChanged == 'undefined') {
-            dataChanged = true;
-        }
-
         this.data.id = hrefObject.get('id');
         this.data.type = hrefObject.get('elementType');
         this.data.subtype = hrefObject.get('type');
-        this.dataChanged = dataChanged;
+        // Do not move this to the other if(!dataChanged), this is sets pimcore internals, dataChanged might be deprecated
+        if (dataChanged) {
+            this.dataChanged = true;
+        }
 
         this.component.store.load({
             params: {valueIds: hrefObject.get('id')},
             callback: function () {
                 this.component.setValue(hrefObject.get('id'));
+                // Pimcore checks isDirty on this.component, Ext will return true if the original data (initially null)
+                // is not the same as the current id
+                if (!dataChanged) {
+                    this.component.originalValue = hrefObject.get('id');
+                }
                 // this.component.autoSize();
             }.bind(this)
         });

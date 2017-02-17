@@ -1,10 +1,14 @@
 # Href typeahead field type
-Add typeahead functionality to href fields using a modified default search functionality
+Adds typeahead functionality to href fields using a modified default search functionality
+
 I temporary made documents and assets read only field in field configurator to prevent users to
 select assets as a valid link at static/js/pimcore/object/classes/data/hrefTypeahead.js, but i didn't want 
 to remove it because maybe we will add functionality to support assets and document
 Also i added validation to prevent users to select more then one class
-
+### Install
+```bash
+composer require youwe/pimcore-href-typeahead
+```
 ### Files 
 <dl>
   <dt><strong>static/js/pimcore/object/classes/data/hrefTypeahead.js</strong></dt>
