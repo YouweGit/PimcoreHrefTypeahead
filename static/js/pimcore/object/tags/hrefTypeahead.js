@@ -3,9 +3,6 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
 
     type: "hrefTypeahead",
     dataChanged: false,
-    // isDirty: function () {
-    //   return false;
-    // },
     /**
      * The init function, its called for each hrefTypeahead in a new object tab
      * @param data
@@ -230,8 +227,6 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
 
         this.component = new Ext.form.TextField(hrefTypeahead);
 
-
-
         this.composite = Ext.create('Ext.form.FieldContainer', {
             layout: 'hbox',
             items: this.getLayoutShowItems(),
@@ -296,19 +291,20 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
      * @param {boolean} dataChanged
      */
     changeData: function (hrefObject, dataChanged) {
-
-        if (dataChanged) {
-            this.dataChanged = true;
-        }
-
         this.data.id = hrefObject.get('id');
         this.data.type = hrefObject.get('elementType');
         this.data.subtype = hrefObject.get('type');
+        // Do not move this to the other if(!dataChanged), this is sets pimcore internals, dataChanged might be deprecated
+        if (dataChanged) {
+            this.dataChanged = true;
+        }
 
         this.component.store.load({
             params: {valueIds: hrefObject.get('id')},
             callback: function () {
                 this.component.setValue(hrefObject.get('id'));
+                // Pimcore checks isDirty on this.component, Ext will return true if the original data (initially null)
+                // is not the same as the current id
                 if (!dataChanged) {
                     this.component.originalValue = hrefObject.get('id');
                 }
