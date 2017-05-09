@@ -25,13 +25,13 @@ class PimcoreHrefTypeahead_SearchController extends \Pimcore\Controller\Action\A
             $source = Object\Concrete::getById($sourceId);
 
         } elseif ($sourceClassName) { // We dont know what type it is by we know its class, strange but nice-path requires a specific source object
-            $classListingFullName = "\\Pimcore\\Model\\Object\\$sourceClassName\\Listing";
-            /** @var Object\Listing\Concrete $sourceListing */
-            $sourceListing = new $classListingFullName();
-            $sourceListing->setUnpublished(true);
-            $sourceListing->setLimit(1);
-            $source = $sourceListing->current();
+            $classFullName = "\\Pimcore\\Model\\Object\\$sourceClassName";
+            $source = new $classFullName();
+        }
 
+        // Don`t do anything without valid source object
+        if (!$source || !$fieldName) {
+            $this->_helper->json(['data' => [], 'success' => false, 'total' => 0]);
         }
 
         // Don`t do anything without valid source object
