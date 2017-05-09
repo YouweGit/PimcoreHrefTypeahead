@@ -33,12 +33,7 @@ class PimcoreHrefTypeahead_SearchController extends \Pimcore\Controller\Action\A
         if (!$source || !$fieldName) {
             $this->_helper->json(['data' => [], 'success' => false, 'total' => 0]);
         }
-
-        // Don`t do anything without valid source object
-        if (!$source || !$fieldName) {
-            $this->_helper->json(['data' => [], 'success' => false, 'total' => 0]);
-        }
-
+        
         /** @var HrefTypeahead $fd */
         $fd = $source->getClass()->getFieldDefinition($fieldName);
         if (!$fd || !$fd->getFieldtype() === 'hrefTypeahead' || !$fd->getObjectsAllowed() || count($fd->getClasses()) !== 1) {
