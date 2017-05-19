@@ -2,8 +2,7 @@
 
 namespace Pimcore\Model\Object\ClassDefinition\Data;
 
-use Pimcore\Model;
-use Pimcore\Model\Object;
+use Pimcore\Model\Element;
 
 class HrefTypeahead extends Href
 {
@@ -14,4 +13,10 @@ class HrefTypeahead extends Href
      */
     public $fieldtype = "hrefTypeahead";
 
+    public function getDataForGrid($data, $object = null, $params = [])
+    {
+        if ($data instanceof Element\ElementInterface) {
+            return (string)$data;
+        }
+    }
 }
