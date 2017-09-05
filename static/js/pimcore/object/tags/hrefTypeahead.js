@@ -81,7 +81,7 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
             typeAhead: true,
             displayField: 'display',
             valueField: 'id',
-            minChars: 1,
+            minChars: 2,
             hideTrigger: true,
             name: this.fieldConfig.name
         };
