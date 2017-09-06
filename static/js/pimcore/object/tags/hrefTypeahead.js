@@ -101,6 +101,12 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
             this.changeData(hrefObject, false);
         }
 
+        this.component.on('keyup', function (e) {
+            var pendingOperations = this.getStore().getProxy().pendingOperations;
+            Ext.Object.eachValue(pendingOperations, function (pendingOperation) {
+                pendingOperation.abort();
+            });
+        });
 
         this.component.on("render", function (el) {
 
