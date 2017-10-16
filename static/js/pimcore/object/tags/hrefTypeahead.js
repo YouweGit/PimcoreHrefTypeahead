@@ -83,7 +83,7 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
             valueField: 'id',
             minChars: 2,
             hideTrigger: true,
-            name: this.fieldConfig.name
+            name: this.fieldConfig.name,
         };
 
         if (this.fieldConfig.width) {
@@ -92,13 +92,13 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
             hrefTypeahead.width = 300;
         }
         hrefTypeahead.enableKeyEvents = true;
-        hrefTypeahead.fieldCls = "pimcore_droptarget_input";
+        hrefTypeahead.fieldCls        = "pimcore_droptarget_input";
 
         this.component = Ext.create('Ext.form.ComboBox', hrefTypeahead);
 
         if (this.data && this.data.path) {
             var hrefObject = Ext.create('HrefObject', this.data);
-            this.changeData(hrefObject, false);
+            this.changeData(hrefObject, false, false);
         }
 
         this.component.on('keyup', function (e) {
@@ -121,7 +121,7 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
                 onNodeOver: function (target, dd, e, data) {
 
                     var record = data.records[0];
-                    var data = record.data;
+                    var data   = record.data;
                     if (this.dndAllowed(data)) {
                         return Ext.dd.DropZone.prototype.dropAllowed;
                     }
@@ -145,8 +145,8 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
                 if (newValue !== oldValue) {
                     this.dataChanged = true;
                 }
-                this.data.id = newRecord.data.id;
-                this.data.type = newRecord.data.type;
+                this.data.id      = newRecord.data.id;
+                this.data.type    = newRecord.data.type;
                 this.data.subtype = newRecord.data.subtype;
             }
         }.bind(this));
@@ -167,17 +167,6 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
             style: "margin-left: 5px",
             handler: this.openSearchEditor.bind(this)
         }];
-
-        // add upload button when assets are allowed
-        if (this.fieldConfig.assetsAllowed) {
-            items.push({
-                xtype: "button",
-                iconCls: "pimcore_icon_upload",
-                cls: "pimcore_inline_upload",
-                style: "margin-left: 5px",
-                handler: this.uploadDialog.bind(this)
-            });
-        }
 
 
         this.composite = Ext.create('Ext.form.FieldContainer', {
@@ -228,11 +217,11 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
         } else {
             hrefTypeahead.width = 300;
         }
-        hrefTypeahead.width = hrefTypeahead.labelWidth + hrefTypeahead.width;
+        hrefTypeahead.width    = hrefTypeahead.labelWidth + hrefTypeahead.width;
         hrefTypeahead.disabled = true;
 
         this.component = new Ext.form.TextField(hrefTypeahead);
-
+        this.component.setValue(this.data.display)
         this.composite = Ext.create('Ext.form.FieldContainer', {
             layout: 'hbox',
             items: this.getLayoutShowItems(),
@@ -240,29 +229,6 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
             border: false,
             style: {
                 padding: 0
-            },
-            listeners: {
-                afterrender: function () {
-                    if (this.data && this.data.path) {
-                        Ext.Ajax.request({
-                            url: '/plugin/PimcoreHrefTypeahead/search/find',
-                            params: {
-                                class: this.fieldConfig.classes[0].classes,
-                                fieldName: this.fieldConfig.name,
-                                sourceId: this.object.id,
-                                valueIds: this.data.id
-                            },
-                            success: function (response, opts) {
-                                var json = Ext.decode(response.responseText);
-                                var result = json.data.first();
-                                if (result && result.display) {
-                                    // Don't worry about dirty state, Ext will always return false if the element is disabled
-                                    this.component.setValue(result.display)
-                                }
-                            }.bind(this)
-                        });
-                    }
-                }.bind(this)
             }
         });
 
@@ -270,59 +236,57 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
 
     },
 
-    uploadDialog: function () {
-        pimcore.helpers.assetSingleUploadDialog(this.fieldConfig.assetUploadPath, "path", function (res) {
-            try {
-                var data = Ext.decode(res.response.responseText);
-                if (data["id"]) {
-                    var hrefObject = Ext.create('HrefObject', {
-                        'id': data["id"],
-                        'display': data["fullpath"],
-                        'type': "asset",
-                        'subtype': data["type"],
-                        'path': data["fullpath"]
-                    });
-                    this.changeData(hrefObject, true);
-                }
-            } catch (e) {
-                console.log(e);
-            }
-        }.bind(this));
-    },
     //
     /**
      * @desc We cannot just pass data because sometimes data has path and sometimes full path. Thanks Pimcore !
      *
      * @param {HrefObject} hrefObject
      * @param {boolean} dataChanged
+     * @param {boolean} loadStore
      */
-    changeData: function (hrefObject, dataChanged) {
-        this.data.id = hrefObject.get('id');
-        this.data.type = hrefObject.get('elementType');
+    changeData: function (hrefObject, dataChanged, loadStore) {
+        if (!loadStore) {
+            loadStore = true
+        }
+        this.data.id      = hrefObject.get('id');
+        this.data.type    = hrefObject.get('elementType');
         this.data.subtype = hrefObject.get('type');
+        this.data.display = hrefObject.get('display');
         // Do not move this to the other if(!dataChanged), this is sets pimcore internals, dataChanged might be deprecated
         if (dataChanged) {
             this.dataChanged = true;
         }
 
-        this.component.store.load({
-            params: {valueIds: hrefObject.get('id')},
-            callback: function () {
-                this.component.setValue(hrefObject.get('id'));
-                // Pimcore checks isDirty on this.component, Ext will return true if the original data (initially null)
-                // is not the same as the current id
-                if (!dataChanged) {
-                    this.component.originalValue = hrefObject.get('id');
-                }
-                // this.component.autoSize();
-            }.bind(this)
-        });
+        if (loadStore) {
+            this.component.store.load({
+                params: {valueIds: hrefObject.get('id')},
+                callback: function () {
+                    this.component.setValue(hrefObject.get('id'));
+                    // Pimcore checks isDirty on this.component, Ext will return true if the original data (initially null)
+                    // is not the same as the current id
+                    if (!dataChanged) {
+                        this.component.originalValue = hrefObject.get('id');
+                    }
+                    // this.component.autoSize();
+                }.bind(this)
+            });
+        } else {
+
+            this.component.store.add(this.data);
+            this.component.setValue(hrefObject.get('id'));
+            // Pimcore checks isDirty on this.component, Ext will return true if the original data (initially null)
+            // is not the same as the current id
+            if (!dataChanged) {
+                this.component.originalValue = hrefObject.get('id');
+            }
+        }
+
 
         // this.component.setValue(path);
     },
     onNodeDrop: function (target, dd, e, dataParam) {
         var record = dataParam.records[0];
-        var data = record.data;
+        var data   = record.data;
         if (this.dndAllowed(data)) {
             var hrefObject = Ext.create('HrefObject', {
                 'id': data.id,
@@ -330,7 +294,7 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
                 'subtype': data.type,
                 'path': data.path
             });
-            this.changeData(hrefObject, true);
+            this.changeData(hrefObject, true, true);
 
             return true;
         } else {
@@ -373,18 +337,6 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
             }.bind(this)
         }));
 
-        // add upload button when assets are allowed
-        if (this.fieldConfig.assetsAllowed) {
-            menu.add(new Ext.menu.Item({
-                text: t('upload'),
-                cls: "pimcore_inline_upload",
-                iconCls: "pimcore_icon_upload",
-                handler: function (item) {
-                    item.parentMenu.destroy();
-                    this.uploadDialog();
-                }.bind(this)
-            }));
-        }
 
         menu.showAt(e.getXY());
 
@@ -392,7 +344,7 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
     },
 
     openSearchEditor: function () {
-        var allowedTypes = [];
+        var allowedTypes    = [];
         var allowedSpecific = {};
         var allowedSubtypes = {};
         var i;
@@ -401,7 +353,7 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
             allowedTypes.push("object");
             if (this.fieldConfig.classes != null && this.fieldConfig.classes.length > 0) {
                 allowedSpecific.classes = [];
-                allowedSubtypes.object = ["object"];
+                allowedSubtypes.object  = ["object"];
                 for (i = 0; i < this.fieldConfig.classes.length; i++) {
                     allowedSpecific.classes.push(this.fieldConfig.classes[i].classes);
                 }
@@ -445,7 +397,7 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
             'subtype': data.subtype,
             'path': data.fullpath
         });
-        this.changeData(hrefObject, true);
+        this.changeData(hrefObject, true, true);
     },
     /**
      * Provided open functionality for linked object
@@ -459,7 +411,7 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
      * Clears the field
      */
     empty: function () {
-        this.data = {};
+        this.data        = {};
         this.dataChanged = true;
         this.component.setValue(null);
     },
@@ -481,7 +433,7 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
      * @return {boolean}
      */
     dndAllowed: function (data) {
-        var type = data.elementType;
+        var type      = data.elementType;
         var i;
         var subType;
         var isAllowed = false;
@@ -504,7 +456,7 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
 
 
         } else if (type == "asset" && this.fieldConfig.assetsAllowed) {
-            subType = data.type;
+            subType   = data.type;
             isAllowed = false;
             if (this.fieldConfig.assetTypes != null && this.fieldConfig.assetTypes.length > 0) {
                 for (i = 0; i < this.fieldConfig.assetTypes.length; i++) {
@@ -519,7 +471,7 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
             }
 
         } else if (type == "document" && this.fieldConfig.documentsAllowed) {
-            subType = data.type;
+            subType   = data.type;
             isAllowed = false;
             if (this.fieldConfig.documentTypes != null && this.fieldConfig.documentTypes.length > 0) {
                 for (i = 0; i < this.fieldConfig.documentTypes.length; i++) {
