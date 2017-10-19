@@ -245,7 +245,7 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
      * @param {boolean} loadStore
      */
     changeData: function (hrefObject, dataChanged, loadStore) {
-        if (!loadStore) {
+        if (loadStore === undefined) {
             loadStore = true
         }
         this.data.id      = hrefObject.get('id');
