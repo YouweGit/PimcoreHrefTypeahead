@@ -97,7 +97,7 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
         this.component = Ext.create('Ext.form.ComboBox', hrefTypeahead);
 
         if (this.data && this.data.path) {
-            var hrefObject = Ext.create('HrefObject', this.data);
+            var hrefObject = Ext.create('HrefObject', Ext.clone(this.data));
             this.changeData(hrefObject, false, false);
         }
 
@@ -249,8 +249,8 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
             loadStore = true
         }
         this.data.id      = hrefObject.get('id');
-        this.data.type    = hrefObject.get('elementType');
-        this.data.subtype = hrefObject.get('type');
+        this.data.type    = hrefObject.get('type');
+        this.data.subtype = hrefObject.get('subtype');
         this.data.display = hrefObject.get('display');
         // Do not move this to the other if(!dataChanged), this is sets pimcore internals, dataChanged might be deprecated
         if (dataChanged) {
