@@ -1,0 +1,5 @@
+pimcore_href_typeahead:
+    resource: "@PimcoreHrefTypeaheadBundle/Controller/"
+    type:     annotation
+    prefix:   /
+

@@ -1,0 +1,8 @@
+
+# Pimcore
+pimcore:
+    objects:
+        class_definitions:
+            data:
+                map:
+                    hrefTypeahead: \Pimcore\Model\DataObject\ClassDefinition\Data\HrefTypeahead
