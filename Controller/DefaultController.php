@@ -1,10 +1,10 @@
 <?php
 
-namespace PimcoreHrefTypeaheadBundle\Controller;
+namespace HrefTypeaheadBundle\Controller;
 
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Tool;
-use PimcoreHrefTypeaheadBundle\Service\SearchBuilder;
+use HrefTypeaheadBundle\Service\SearchBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +19,7 @@ use PimcoreHrefTypeaheadBundle\Model\DataObject\Data\HrefTypeahead;
  * Class DefaultController
  *
  * @Route("/admin/href-typeahead")
- * @package PimcoreHrefTypeaheadBundle\Controller
+ * @package HrefTypeaheadBundle\Controller
  */
 class DefaultController extends AdminController
 {
