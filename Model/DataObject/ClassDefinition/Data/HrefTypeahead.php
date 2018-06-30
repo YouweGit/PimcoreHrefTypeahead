@@ -1,6 +1,6 @@
 <?php
 
-namespace PimcoreHrefTypeaheadBundle\Model\DataObject\Data;
+namespace HrefTypeaheadBundle\Model\DataObject\Data;
 
 
 use Pimcore\Model;
