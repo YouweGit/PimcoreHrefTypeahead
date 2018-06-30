@@ -1,12 +1,21 @@
 <?php
 
-namespace PimcoreHrefTypeaheadBundle;
+namespace HrefTypeaheadBundle;
 
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
 
-class PimcoreHrefTypeaheadBundle extends AbstractPimcoreBundle
+class HrefTypeaheadBundle extends AbstractPimcoreBundle
 {
 
+    use PackageVersionTrait;
+    
+    protected function getComposerPackageName(): string
+    {
+        // getVersion() will use this name to read the version from
+        // PackageVersions and return a normalized value
+        return 'youwe/pimcore-href-typeahead';
+    }
+    
     public function getJsPaths()
     {
         return [
