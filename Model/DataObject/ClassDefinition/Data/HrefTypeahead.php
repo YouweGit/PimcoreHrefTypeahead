@@ -19,8 +19,8 @@ class HrefTypeahead extends Model\DataObject\ClassDefinition\Data\Href
 
 
     /**
-     * @see DataObject\ClassDefinition\Data::getDataForEditmode
-     * @param Asset|Document|DataObject\AbstractObject $data
+     * @see Model\DataObject\ClassDefinition\Data::getDataForEditmode
+     * @param Asset|Document|Model\DataObject\AbstractObject $data
      * @param null|Model\DataObject\AbstractObject $object
      * @param mixed $params
      * @return array
@@ -35,14 +35,14 @@ class HrefTypeahead extends Model\DataObject\ClassDefinition\Data\Href
                 "type"    => Element\Service::getElementType($data),
             ];
 
-            if ($data instanceof Object\Concrete) {
+            if ($data instanceof Model\DataObject\Concrete) {
                 $r['display'] = (string)$data;
             }
 
             return $r;
         }
 
-        return;
+        return [];
     }
 
     public function getDataForGrid($data, $object = null, $params = [])
