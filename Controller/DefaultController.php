@@ -16,9 +16,9 @@ use Symfony\Component\HttpFoundation\Response;
 class DefaultController extends FrontendController
 {
     /**
-     * @Route("/search")
+     * @Route("/find")
      */
-    public function indexAction(Request $request)
+    public function findAction(Request $request)
     {
         return new Response('Hello world from pimcore_href_typeahead');
     }
