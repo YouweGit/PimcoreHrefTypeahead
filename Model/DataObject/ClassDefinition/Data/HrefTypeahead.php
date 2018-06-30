@@ -1,14 +1,14 @@
 <?php
 
-namespace Pimcore\Model\Object\ClassDefinition\Data;
+namespace PimcoreHrefTypeaheadBundle\Model\DataObject\Data;
+
 
 use Pimcore\Model;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Document;
 use Pimcore\Model\Element;
-use Pimcore\Model\Object;
 
-class HrefTypeahead extends Href
+class HrefTypeahead extends Model\DataObject\ClassDefinition\Data\Href
 {
     /**
      * Static type of this element
@@ -19,9 +19,9 @@ class HrefTypeahead extends Href
 
 
     /**
-     * @see Object\ClassDefinition\Data::getDataForEditmode
-     * @param Asset|Document|Object\AbstractObject $data
-     * @param null|Model\Object\AbstractObject $object
+     * @see Model\DataObject\ClassDefinition\Data::getDataForEditmode
+     * @param Asset|Document|Model\DataObject\AbstractObject $data
+     * @param null|Model\DataObject\AbstractObject $object
      * @param mixed $params
      * @return array
      */
@@ -35,14 +35,14 @@ class HrefTypeahead extends Href
                 "type"    => Element\Service::getElementType($data),
             ];
 
-            if ($data instanceof Object\Concrete) {
+            if ($data instanceof Model\DataObject\Concrete) {
                 $r['display'] = (string)$data;
             }
 
             return $r;
         }
 
-        return;
+        return [];
     }
 
     public function getDataForGrid($data, $object = null, $params = [])

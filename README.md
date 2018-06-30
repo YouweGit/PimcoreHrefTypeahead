@@ -1,4 +1,6 @@
 # Href typeahead field type
+![Demo](Docs/demo.gif)
+
 Adds typeahead functionality to href fields using a modified default search functionality
 
 I temporary made documents and assets read only field in field configurator to prevent users to

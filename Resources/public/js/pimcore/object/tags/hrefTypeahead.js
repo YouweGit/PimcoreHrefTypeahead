@@ -60,7 +60,7 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
             idProperty: 'fullpath',
             proxy: {
                 type: 'ajax',
-                url: '/plugin/PimcoreHrefTypeahead/search/find',
+                url: '/admin/href-typeahead/find',
                 reader: {
                     type: 'json',
                     rootProperty: 'data',

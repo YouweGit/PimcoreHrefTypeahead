@@ -1,11 +1,11 @@
 <?php
 
 
-namespace HrefTypeahead;
+namespace PimcoreHrefTypeaheadBundle\Service;
 
 use Pimcore\Db;
 use Pimcore\Model\Element;
-use Pimcore\Model\Object;
+use Pimcore\Model\DataObject;
 use Pimcore\Model\Search\Backend;
 use Pimcore\Model\Search\Backend\Data;
 use Pimcore\Model\User;

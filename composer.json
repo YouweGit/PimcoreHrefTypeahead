@@ -1,18 +1,28 @@
 {
   "name": "youwe/pimcore-href-typeahead",
   "description": "Allows typeahead functionality in href",
-  "type": "pimcore-plugin",
+  "type": "pimcore-bundle",
   "require": {
-    "pimcore/installer-plugin": "^1.5"
+    "pimcore/core-version": ">=5.1.0"
   },
   "license": "MIT",
   "authors": [
     {
+      "name": "Joris Ros",
+      "email": "j.ros@youwe.nl"
+    },{
       "name": "Manea Eugen",
       "email": "e.manea@youwe.nl"
     },
     {
       "name": "Youwe"
     }
-  ]
+  ],
+  "extra": {
+    "pimcore": {
+      "bundles": [
+        "PimcoreHrefTypeaheadBundle\\PimcoreHrefTypeaheadBundle "
+      ]
+    }
+  }
 }
