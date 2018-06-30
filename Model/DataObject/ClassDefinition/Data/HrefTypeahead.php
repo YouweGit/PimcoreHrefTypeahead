@@ -1,12 +1,12 @@
 <?php
 
-namespace Pimcore\Model\Object\ClassDefinition\Data;
+namespace PimcoreHrefTypeaheadBundle\Model\DataObject\Data\HrefTypeahead;
+
 
 use Pimcore\Model;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Document;
 use Pimcore\Model\Element;
-use Pimcore\Model\Object;
 
 class HrefTypeahead extends Model\DataObject\ClassDefinition\Data\Href
 {
@@ -19,9 +19,9 @@ class HrefTypeahead extends Model\DataObject\ClassDefinition\Data\Href
 
 
     /**
-     * @see Object\ClassDefinition\Data::getDataForEditmode
-     * @param Asset|Document|Object\AbstractObject $data
-     * @param null|Model\Object\AbstractObject $object
+     * @see DataObject\ClassDefinition\Data::getDataForEditmode
+     * @param Asset|Document|DataObject\AbstractObject $data
+     * @param null|Model\DataObject\AbstractObject $object
      * @param mixed $params
      * @return array
      */
