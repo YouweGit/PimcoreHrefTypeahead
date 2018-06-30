@@ -11,7 +11,7 @@ services:
 
     # controllers are imported separately to make sure they're public
     # and have a tag that allows actions to type-hint services
-    PimcoreHrefTypeaheadBundle\Controller\:
+    HrefTypeaheadBundle\Controller\:
         resource: '../../Controller'
         public: true
         tags: ['controller.service_arguments']
