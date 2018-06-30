@@ -7,10 +7,16 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class DefaultController
+ *
+ * @Route("/admin/href-typeahead")
+ * @package PimcoreHrefTypeaheadBundle\Controller
+ */
 class DefaultController extends FrontendController
 {
     /**
-     * @Route("/pimcore_href_typeahead")
+     * @Route("/search")
      */
     public function indexAction(Request $request)
     {
