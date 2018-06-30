@@ -2,8 +2,9 @@
 
 namespace PimcoreHrefTypeaheadBundle\Controller;
 
-use Pimcore\Controller\FrontendController;
+use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Tool;
+use PimcoreHrefTypeaheadBundle\Service\SearchBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,28 +21,28 @@ use PimcoreHrefTypeaheadBundle\Model\DataObject\Data\HrefTypeahead;
  * @Route("/admin/href-typeahead")
  * @package PimcoreHrefTypeaheadBundle\Controller
  */
-class DefaultController extends FrontendController
+class DefaultController extends AdminController
 {
     /**
      * @Route("/find")
      */
     public function findAction(Request $request)
     {
-        $sourceId = $this->getParam('sourceId');
-        $sourceClassName = $this->getParam('className');
-        $valueIds = $this->getParam('valueIds');
-        $fieldName = $this->getParam('fieldName');
+        $sourceId = $request->get('sourceId');
+        $sourceClassName = $request->get('className');
+        $valueIds = $request->get('valueIds');
+        $fieldName = $request->get('fieldName');
         $source = null;
         // We know what object it is and we can get its type by id
         if ($sourceId) {
-            $source = Object\Concrete::getById($sourceId);
+            $source = DataObject\Concrete::getById($sourceId);
         } elseif ($sourceClassName) { // We dont know what type it is by we know its class, strange but nice-path requires a specific source object
-            $classFullName = "\\Pimcore\\Model\\Object\\$sourceClassName";
+            $classFullName = "\\Pimcore\\Model\\DataObject\\$sourceClassName";
             $source = new $classFullName();
         }
         // Don`t do anything without valid source object
         if (!$source || !$fieldName) {
-            $this->_helper->json(['data' => [], 'success' => false, 'total' => 0]);
+            return $this->adminJson(['data' => [], 'success' => false, 'total' => 0]);
         }
 
         /** @var HrefTypeahead $fd */
@@ -54,38 +55,39 @@ class DefaultController extends FrontendController
         if ($valueIds) {
             $valueObjs = [];
             foreach (explode_and_trim(',', $valueIds) as $valueId) {
-                $valueObjs[] = Object\Concrete::getById($valueId);
+                $valueObjs[] = DataObject\Concrete::getById($valueId);
             }
             if (!$valueObjs) {
-                $this->_helper->json(['data' => [], 'success' => false, 'total' => 0]);
+                return $this->adminJson(['data' => [], 'success' => false, 'total' => 0]);
             }
             $elements = [];
             foreach ($valueObjs as $valueObj) {
                 $label = $this->getNicePath($fd, $valueObj, $source);
                 $elements[] = $this->formatElement($valueObj, $label);
             }
-            $this->_helper->json(['data' => $elements, 'success' => true, 'total' => count($elements)]);
+
+            return $this->adminJson(['data' => $elements, 'success' => true, 'total' => count($elements)]);
         }
         // This means that we have passed the values ids
         // but the field is empty this is common when the field is empty
         // We don't need to continue looping
-        elseif (!$valueIds && $this->hasParam('valueIds')) {
-            $this->_helper->json(['data' => [], 'success' => true, 'total' => 0]);
+        elseif (!$valueIds && $request->get('valueIds')) {
+            return $this->adminJson(['data' => [], 'success' => false, 'total' => 0]);
         }
-        $filter = $this->getParam('filter') ? \Zend_Json::decode($this->getParam('filter')) : null;
-        $considerChildTags = $this->getParam('considerChildTags') === 'true';
-        $sortingSettings = \Pimcore\Admin\Helper\QueryParams::extractSortingSettings($this->getAllParams());
+        $filter = $request->get('filter') ? \Zend_Json::decode($request->get('filter')) : null;
+        $considerChildTags = $request->get('considerChildTags') === 'true';
+        $sortingSettings = \Pimcore\Admin\Helper\QueryParams::extractSortingSettings($request->request->all());
         $searchService = SearchBuilder::create()
-            ->withUser($this->getUser())
+            ->withUser($this->getAdminUser())
             ->withTypes(['object'])
             ->withSubTypes(['object'])
             ->withClassNames([$className])
-            ->withQuery($this->getParam('query'))
-            ->withStart((int)$this->getParam('start'))
-            ->withLimit((int)$this->getParam('limit'))
-            ->withFields($this->getParam('fields'))
+            ->withQuery( $request->get('query'))
+            ->withStart((int) $request->get('start'))
+            ->withLimit((int) $request->get('limit'))
+            ->withFields( $request->get('fields'))
             ->withFilter($filter)
-            ->withTagIds($this->getParam('tagIds'))
+            ->withTagIds( $request->get('tagIds'))
             ->withConsiderChildTags($considerChildTags)
             ->withSortSettings($sortingSettings)
             ->build();
@@ -106,13 +108,13 @@ class DefaultController extends FrontendController
             }
         }
         // only get the real total-count when the limit parameter is given otherwise use the default limit
-        if ($this->getParam('limit')) {
+        if ($request->get('limit')) {
             $totalMatches = $searcherList->getTotalCount();
         } else {
             $totalMatches = count($elements);
         }
-        $this->_helper->json(['data' => $elements, 'success' => true, 'total' => $totalMatches]);
-        $this->removeViewRenderer();
+
+        return $this->adminJson(['data' => $elements, 'success' => true, 'total' => $totalMatches]);
     }
 
     /**
