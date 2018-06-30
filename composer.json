@@ -3,7 +3,7 @@
   "description": "Allows typeahead functionality in href",
   "type": "pimcore-bundle",
   "require": {
-    "pimcore/core-version": "~5.1.0"
+    "pimcore/core-version": ">=5.1.0"
   },
   "license": "MIT",
   "authors": [
