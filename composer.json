@@ -1,5 +1,5 @@
 {
-  "name": "youwe/pimcore-href-typeahead",
+  "name": "jorisros/pimcore-href-typeahead",
   "description": "Allows typeahead functionality in href",
   "type": "pimcore-bundle",
   "require": {
@@ -18,10 +18,15 @@
       "name": "Youwe"
     }
   ],
+  "autoload": {
+    "psr-4": {
+      "HrefTypeaheadBundle\\": "/"
+    }
+  },
   "extra": {
     "pimcore": {
       "bundles": [
-        "PimcoreHrefTypeaheadBundle\\PimcoreHrefTypeaheadBundle"
+        "HrefTypeaheadBundle\\HrefTypeaheadBundle"
       ]
     }
   }

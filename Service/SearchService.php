@@ -1,7 +1,7 @@
 <?php
 
 
-namespace PimcoreHrefTypeaheadBundle\Service;
+namespace HrefTypeaheadBundle\Service;
 
 use Pimcore\Db;
 use Pimcore\Model\Element;

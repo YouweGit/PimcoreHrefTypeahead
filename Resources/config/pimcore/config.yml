@@ -5,4 +5,4 @@ pimcore:
         class_definitions:
             data:
                 map:
-                    hrefTypeahead: PimcoreHrefTypeaheadBundle\Model\DataObject\Data\HrefTypeahead
+                    hrefTypeahead: HrefTypeaheadBundle\Model\DataObject\Data\HrefTypeahead

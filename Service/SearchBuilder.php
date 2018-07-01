@@ -1,7 +1,7 @@
 <?php
 
 
-namespace PimcoreHrefTypeaheadBundle\Service;
+namespace HrefTypeaheadBundle\Service;
 
 
 use Pimcore\Model\User;
