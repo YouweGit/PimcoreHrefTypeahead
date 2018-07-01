@@ -127,7 +127,7 @@ class SearchService
 
             foreach ($params as $paramConditionObject) {
                 //this loop divides filter parameters to localized and un-localized groups
-                $definitionExists = in_array('o_' . $paramConditionObject['property'], Object\Service::getSystemFields(), true)
+                $definitionExists = in_array('o_' . $paramConditionObject['property'], DataObject\Service::getSystemFields(), true)
                     || $class->getFieldDefinition($paramConditionObject['property']);
                 //TODO: for sure, we can add additional condition like getLocalizedFieldDefinition()->getFieldDefinition(...
                 if ($definitionExists) {
@@ -141,10 +141,10 @@ class SearchService
 
             //string statements for divided filters
             $conditionFilters = count($unLocalizedFieldsFilters)
-                ? DataObject\Service::getFilterCondition(\Zend_Json::encode($unLocalizedFieldsFilters), $class)
+                ? DataObject\Service::getFilterCondition(json_encode($unLocalizedFieldsFilters), $class)
                 : null;
             $localizedConditionFilters = count($localizedFieldsFilters)
-                ? DataObject\Service::getFilterCondition(\Zend_Json::encode($localizedFieldsFilters), $class)
+                ? DataObject\Service::getFilterCondition(json_encode($localizedFieldsFilters), $class)
                 : null;
 
             $join = '';
