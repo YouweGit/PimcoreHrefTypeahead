@@ -118,7 +118,7 @@ class SearchService
         $className = current($this->classNames);
         // filtering for objects
         if ($this->filter && $className) {
-            $class = Object\ClassDefinition::getByName($className);
+            $class = DataObject\ClassDefinition::getByName($className);
 
             // add Localized Fields filtering
             $params = $this->filter;
@@ -141,10 +141,10 @@ class SearchService
 
             //string statements for divided filters
             $conditionFilters = count($unLocalizedFieldsFilters)
-                ? Object\Service::getFilterCondition(\Zend_Json::encode($unLocalizedFieldsFilters), $class)
+                ? DataObject\Service::getFilterCondition(\Zend_Json::encode($unLocalizedFieldsFilters), $class)
                 : null;
             $localizedConditionFilters = count($localizedFieldsFilters)
-                ? Object\Service::getFilterCondition(\Zend_Json::encode($localizedFieldsFilters), $class)
+                ? DataObject\Service::getFilterCondition(\Zend_Json::encode($localizedFieldsFilters), $class)
                 : null;
 
             $join = '';
