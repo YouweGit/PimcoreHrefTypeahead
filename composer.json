@@ -18,6 +18,11 @@
       "name": "Youwe"
     }
   ],
+  "autoload": {
+    "psr-4": {
+      "HrefTypeaheadBundle\\": "/"
+    }
+  },
   "extra": {
     "pimcore": {
       "bundles": [
