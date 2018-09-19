@@ -11,8 +11,7 @@ class PimcoreHrefTypeaheadBundle extends AbstractPimcoreBundle
     {
         return [
             '/bundles/pimcorehreftypeahead/js/pimcore/object/tags/hrefTypeahead.js',
-            '/bundles/pimcorehreftypeahead/js/pimcore/object/classes/data/hrefTypeahead.js',
-            '/bundles/pimcorehreftypeahead/js/HrefObject.js'
+            '/bundles/pimcorehreftypeahead/js/pimcore/object/classes/data/hrefTypeahead.js'
         ];
     }
 
