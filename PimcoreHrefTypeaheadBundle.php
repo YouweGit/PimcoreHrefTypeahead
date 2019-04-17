@@ -10,6 +10,7 @@ class PimcoreHrefTypeaheadBundle extends AbstractPimcoreBundle
     public function getJsPaths()
     {
         return [
+            '/bundles/pimcorehreftypeahead/js/models/HrefObject.js',
             '/bundles/pimcorehreftypeahead/js/pimcore/object/tags/hrefTypeahead.js',
             '/bundles/pimcorehreftypeahead/js/pimcore/object/classes/data/hrefTypeahead.js'
         ];

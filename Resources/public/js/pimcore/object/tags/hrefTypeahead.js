@@ -98,7 +98,7 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
 
         if (this.data && this.data.path) {
             var hrefObject = Ext.create('HrefObject', Ext.clone(this.data));
-            this.changeData(hrefObject, false, false);
+            this.changeData(hrefObject, false, true);
         }
 
         this.component.on('keyup', function (e) {
