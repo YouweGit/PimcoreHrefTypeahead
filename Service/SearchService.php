@@ -206,7 +206,7 @@ class SearchService
         //filtering for tags
         $conditionParts = $this->appendTagConditions($conditionParts);
 
-        \Pimcore::getEventDispatcher()->dispatch('hreftypeahead.search', new HreftypeaheadSearchEvent($this->sourceObject, $conditionParts, []));
+        \Pimcore::getEventDispatcher()->dispatch('hreftypeahead.search', new HreftypeaheadSearchEvent($this->sourceObject, $conditionParts));
 
         if (count($conditionParts) > 0) {
             $condition = implode(' AND ', $conditionParts);
