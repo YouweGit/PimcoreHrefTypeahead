@@ -26,5 +26,44 @@ composer require youwe/pimcore-href-typeahead
   <dd>A controller containing autocomplete source</dd>
 </dl>
 
+### Events
+
+When you want to add some extra filters to the search done by the href typeahead, you can use a listener.
+An example:
+
+Listener config (ie. in src/AppBundle/Resources/config/services.yml):
+
+    AppBundle\EventListener\HreftypeaheadSearchListener:
+        tags:
+            - { name: kernel.event_listener, event: hreftypeahead.search, method: onSearch }
+
+Listener code (ie. in AppBundle\EventListener\HreftypeaheadSearchListener):
+
+    class HreftypeaheadSearchListener
+    {
+    
+        /* @var HreftypeaheadSearchEvent */
+        protected $e;
+    
+        public function __construct()
+        {
+        }
+    
+        public function onSearch(HreftypeaheadSearchEvent $e)
+        {
+            $this->e = $e;
+            \Pimcore\Log\Simple::log('hreftypeahead', 'onSearch called!');
+            \Pimcore\Log\Simple::log('hreftypeahead', 'source object class ' . get_class($e->getSourceObject()));
+            \Pimcore\Log\Simple::log('hreftypeahead', 'condition count ' . count($e->getConditions()));
+    
+            if($c = $this->getAllowedObjectCondition()) {
+                $e->addCondition($c);
+            }
+    
+        }
+        
+        ......
+
+
 ### Limitations
 * It only supports one object linked in href

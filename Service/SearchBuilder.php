@@ -4,6 +4,7 @@
 namespace PimcoreHrefTypeaheadBundle\Service;
 
 
+use Pimcore\Model\DataObject;
 use Pimcore\Model\User;
 
 class SearchBuilder
@@ -32,6 +33,8 @@ class SearchBuilder
     private $considerChildTags;
     /** @var array */
     private $sortSettings;
+    /** @var DataObject\Concrete */
+    private $sourceObject;
 
     /**
      * @return SearchBuilder
@@ -216,6 +219,25 @@ class SearchBuilder
     public function withFilter($filter)
     {
         $this->filter = $filter;
+
+        return $this;
+    }
+
+    /**
+     * @return DataObject\Concrete
+     */
+    public function getSourceObject()
+    {
+        return $this->sourceObject;
+    }
+
+    /**
+     * @param Dataobject\Conrete
+     * @return SearchBuilder
+     */
+    public function withSourceObject($sourceObject)
+    {
+        $this->sourceObject = $sourceObject;
 
         return $this;
     }

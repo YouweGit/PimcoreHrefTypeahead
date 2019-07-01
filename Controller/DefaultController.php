@@ -87,6 +87,7 @@ class DefaultController extends AdminController
             ->withLimit((int) $request->get('limit'))
             ->withFields( $request->get('fields'))
             ->withFilter($filter)
+            ->withSourceObject($source)
             ->withTagIds( $request->get('tagIds'))
             ->withConsiderChildTags($considerChildTags)
             ->withSortSettings($sortingSettings)
