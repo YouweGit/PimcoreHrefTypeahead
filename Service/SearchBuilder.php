@@ -245,7 +245,7 @@ class SearchBuilder
      * @param Dataobject\Conrete
      * @return SearchBuilder
      */
-    public function withSourceObject($sourceObject)
+    public function withSourceObject(DataObject\Concrete $sourceObject)
     {
         $this->sourceObject = $sourceObject;
 
