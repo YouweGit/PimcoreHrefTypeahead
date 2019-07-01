@@ -214,7 +214,6 @@ class SearchService
         //filtering for tags
         $conditionParts = $this->appendTagConditions($conditionParts);
 
-//        \Pimcore::getEventDispatcher()->dispatch('hreftypeahead.search', new HreftypeaheadSearchEvent($this->sourceObject, $conditionParts));
         $this->dispatcher->dispatch('hreftypeahead.search', new HreftypeaheadSearchEvent($this->sourceObject, $conditionParts));
 
         if (count($conditionParts) > 0) {
