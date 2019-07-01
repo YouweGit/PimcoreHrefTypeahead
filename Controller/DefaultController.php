@@ -26,7 +26,7 @@ class DefaultController extends AdminController
     /**
      * @Route("/find")
      */
-    public function findAction(Request $request, \PimcoreHrefTypeaheadBundle\Service\SearchBuilder $searchBuilder)
+    public function findAction(Request $request, SearchBuilder $searchBuilder)
     {
         $sourceId = $request->get('sourceId');
         $sourceClassName = $request->get('className');

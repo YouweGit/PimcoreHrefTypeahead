@@ -52,13 +52,8 @@ Listener code (ie. in AppBundle\EventListener\HreftypeaheadSearchListener):
         public function onSearch(HreftypeaheadSearchEvent $e)
         {
             $this->e = $e;
-            \Pimcore\Log\Simple::log('hreftypeahead', 'onSearch called!');
-            \Pimcore\Log\Simple::log('hreftypeahead', 'source object class ' . get_class($e->getSourceObject()));
-            \Pimcore\Log\Simple::log('hreftypeahead', 'condition count ' . count($e->getConditions()));
     
-            if($c = $this->getAllowedObjectCondition()) {
-                $e->addCondition($c);
-            }
+            $e->addCondition('(0 = 0)');   // just an example
     
         }
         
