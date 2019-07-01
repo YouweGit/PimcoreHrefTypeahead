@@ -36,12 +36,21 @@ class SearchBuilder
     /** @var DataObject\Concrete */
     private $sourceObject;
 
+    /* @var SearchService */
+    private $searchService;
+
+    public function __construct(SearchService $searchService)
+    {
+        $this->searchService = $searchService;
+    }
+
     /**
      * @return SearchBuilder
      */
-    public static function create()
+    public function create()
     {
-        return new self();
+//        return new self();
+        return $this;
     }
 
     /**
@@ -49,7 +58,8 @@ class SearchBuilder
      */
     public function build()
     {
-        return new SearchService($this);
+        $this->searchService->fromBuilder($this);
+        return $this->searchService;
     }
 
     /**

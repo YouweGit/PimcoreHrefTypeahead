@@ -10,6 +10,7 @@ use Pimcore\Model\Search\Backend;
 use Pimcore\Model\Search\Backend\Data;
 use Pimcore\Model\User;
 use PimcoreHrefTypeaheadBundle\Event\HreftypeaheadSearchEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class SearchService
@@ -36,7 +37,7 @@ class SearchService
     private $fields;
     /** @var array */
     private $filter;
-    /** @var DataObject\Conrete */
+    /** @var DataObject\Concrete */
     private $sourceObject;
     /** @var array */
     private $tagIds;
@@ -44,7 +45,14 @@ class SearchService
     private $considerChildTags;
     private $sortSettings;
 
-    public function __construct(SearchBuilder $searchBuilder)
+    /* @var EventDispatcherInterface */
+    private $dispatcher;
+
+    public function __construct(EventDispatcherInterface $dispatcher) {
+        $this->dispatcher = $dispatcher;
+    }
+
+    public function fromBuilder(SearchBuilder $searchBuilder)
     {
         if ($searchBuilder->getUser() === null || !$searchBuilder->getUser() instanceof User) {
             throw new \InvalidArgumentException('Missing user or invalid, please review what we passed to SearchBuilder class');
@@ -206,7 +214,8 @@ class SearchService
         //filtering for tags
         $conditionParts = $this->appendTagConditions($conditionParts);
 
-        \Pimcore::getEventDispatcher()->dispatch('hreftypeahead.search', new HreftypeaheadSearchEvent($this->sourceObject, $conditionParts));
+//        \Pimcore::getEventDispatcher()->dispatch('hreftypeahead.search', new HreftypeaheadSearchEvent($this->sourceObject, $conditionParts));
+        $this->dispatcher->dispatch('hreftypeahead.search', new HreftypeaheadSearchEvent($this->sourceObject, $conditionParts));
 
         if (count($conditionParts) > 0) {
             $condition = implode(' AND ', $conditionParts);
