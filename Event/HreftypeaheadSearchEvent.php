@@ -20,16 +20,16 @@ use Symfony\Component\EventDispatcher\Event;
 class HreftypeaheadSearchEvent extends Event
 {
     /** @var DataObject\Conrete */
-    protected $sourceObject;
+    private $sourceObject;
 
     /** @var array */
-    protected $conditions;
+    private $conditions;
 
     /**
      * HreftypeaheadSearchEvent constructor.
      *
-     * @param array $conditions
-     * @param array $arguments
+     * @param DataObject\Concrete $sourceObject
+     * @param string[] $conditions
      */
     public function __construct(DataObject\Concrete $sourceObject, array &$conditions)
     {
@@ -46,14 +46,14 @@ class HreftypeaheadSearchEvent extends Event
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     public function getConditions()
     {
         return $this->conditions;
     }
 
-    public function setConditions($conditions)
+    public function setConditions(array $conditions)
     {
         $this->conditions = $conditions;
     }
