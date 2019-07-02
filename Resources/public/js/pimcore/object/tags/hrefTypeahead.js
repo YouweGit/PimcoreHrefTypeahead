@@ -76,13 +76,20 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
     },
 
     getLayoutEdit: function () {
+        var show_trigger = false;
+        if(typeof this.fieldConfig.showTrigger != "undefined") {   // compatible with older versions' configs that don't have this setting!
+           if(this.fieldConfig.showTrigger) {
+               show_trigger = true;
+           }
+        }
+
         var hrefTypeahead = {
             store: this.getHrefTypeaheadStore(),
             typeAhead: true,
             displayField: 'display',
             valueField: 'id',
             minChars: 2,
-            hideTrigger: true,
+            hideTrigger: !show_trigger,
             name: this.fieldConfig.name,
         };
 

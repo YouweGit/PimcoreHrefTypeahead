@@ -7,10 +7,22 @@ I temporary made documents and assets read only field in field configurator to p
 select assets as a valid link at static/js/pimcore/object/classes/data/hrefTypeahead.js, but i didn't want 
 to remove it because maybe we will add functionality to support assets and document
 Also i added validation to prevent users to select more then one class
+
 ### Install
 ```bash
 composer require youwe/pimcore-href-typeahead
 ```
+
+### Usage
+
+The HrefTypeahead field will be available to use in your model classes, it's similar to href, but has
+typeahead functionality.
+
+### Configuration
+
+When using the HrefAutocomplete in your model, you can use the "show_trigger" option by checking the checkbox. 
+This will display a little dropdown icon, so you can click this instead of typing in the box.
+
 ### Files 
 <dl>
   <dt><strong>static/js/pimcore/object/classes/data/hrefTypeahead.js</strong></dt>

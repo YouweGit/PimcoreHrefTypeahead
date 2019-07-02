@@ -77,7 +77,7 @@ class DefaultController extends AdminController
         $filter = $request->get('filter') ? \Zend_Json::decode($request->get('filter')) : null;
         $considerChildTags = $request->get('considerChildTags') === 'true';
         $sortingSettings = \Pimcore\Admin\Helper\QueryParams::extractSortingSettings($request->request->all());
-        $searchService = $searchBuilder->create()
+        $searchService = $searchBuilder
             ->withUser($this->getAdminUser())
             ->withTypes(['object'])
             ->withSubTypes(['object'])
