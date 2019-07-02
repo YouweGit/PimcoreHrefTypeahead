@@ -37,9 +37,9 @@ class HrefTypeahead extends Model\DataObject\ClassDefinition\Data\Href
      *
      * @return $this
      */
-    public function setShowTrigger($show_trigger)
+    public function setShowTrigger($showTrigger)
     {
-        $this->showTrigger = $show_trigger;
+        $this->showTrigger = $showTrigger;
 
         return $this;
     }
