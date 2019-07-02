@@ -214,7 +214,7 @@ class SearchService
         //filtering for tags
         $conditionParts = $this->appendTagConditions($conditionParts);
 
-        $this->dispatcher->dispatch('hreftypeahead.search', new HreftypeaheadSearchEvent($this->sourceObject, $conditionParts));
+        $this->dispatcher->dispatch(HreftypeaheadSearchEvent::SEARCH_EVENT, new HreftypeaheadSearchEvent($this->sourceObject, $conditionParts));
 
         if (count($conditionParts) > 0) {
             $condition = implode(' AND ', $conditionParts);

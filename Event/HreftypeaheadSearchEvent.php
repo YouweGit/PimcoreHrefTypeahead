@@ -19,6 +19,8 @@ use Symfony\Component\EventDispatcher\Event;
 
 class HreftypeaheadSearchEvent extends Event
 {
+    const SEARCH_EVENT = 'hreftypeahead.search';
+
     /** @var DataObject\Conrete */
     private $sourceObject;
 

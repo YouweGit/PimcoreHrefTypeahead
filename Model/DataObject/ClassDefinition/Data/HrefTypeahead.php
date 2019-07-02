@@ -17,6 +17,33 @@ class HrefTypeahead extends Model\DataObject\ClassDefinition\Data\Href
      */
     public $fieldtype = "hrefTypeahead";
 
+    /**
+     * Allowed document types
+     *
+     * @var boolean
+     */
+    public $showTrigger;
+
+    /**
+     * @return bool
+     */
+    public function getShowTrigger()
+    {
+        return $this->showTrigger;
+    }
+
+    /**
+     * @param bool $show_trigger
+     *
+     * @return $this
+     */
+    public function setShowTrigger($show_trigger)
+    {
+        $this->showTrigger = $show_trigger;
+
+        return $this;
+    }
+
 
     /**
      * @see Model\DataObject\ClassDefinition\Data::getDataForEditmode

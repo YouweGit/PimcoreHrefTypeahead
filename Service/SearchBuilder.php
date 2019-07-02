@@ -45,15 +45,6 @@ class SearchBuilder
     }
 
     /**
-     * @return SearchBuilder
-     */
-    public function create()
-    {
-//        return new self();
-        return $this;
-    }
-
-    /**
      * @return SearchService
      */
     public function build()

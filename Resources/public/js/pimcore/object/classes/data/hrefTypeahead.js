@@ -36,6 +36,10 @@ pimcore.object.classes.data.hrefTypeahead = Class.create(pimcore.object.classes.
             this.datax.lazyLoading = true;
         }
 
+        if (typeof this.datax.showTrigger == "undefined") {
+            this.datax.showTrigger = false;
+        }
+
         pimcore.helpers.sanitizeAllowedTypes(this.datax, "classes");
         pimcore.helpers.sanitizeAllowedTypes(this.datax, "assetTypes");
         pimcore.helpers.sanitizeAllowedTypes(this.datax, "documentTypes");
@@ -159,7 +163,7 @@ pimcore.object.classes.data.hrefTypeahead = Class.create(pimcore.object.classes.
                         fieldLabel: t("width"),
                         name: "width",
                         value: this.datax.width
-                    } ,
+                    },
                     {
                         xtype: "checkbox",
                         fieldLabel: t("lazy_loading"),
@@ -187,6 +191,13 @@ pimcore.object.classes.data.hrefTypeahead = Class.create(pimcore.object.classes.
                         fieldLabel: t("path_formatter_class"),
                         name: 'pathFormatterClass',
                         value: this.datax.pathFormatterClass
+                    },
+                    {
+                        xtype: "checkbox",
+                        fieldLabel: t("show_trigger"),
+                        name: "showTrigger",
+                        disabled: false,
+                        checked: this.datax.showTrigger
                     }
                 ]
             },
@@ -393,6 +404,7 @@ pimcore.object.classes.data.hrefTypeahead = Class.create(pimcore.object.classes.
                     relationType: source.datax.relationType,
                     remoteOwner: source.datax.remoteOwner,
                     lazyLoading: source.datax.lazyLoading,
+                    showTrigger: source.datax.showTrigger,
                     classes: source.datax.classes,
                     objectsAllowed: source.datax.objectsAllowed,
                     assetsAllowed: source.datax.assetsAllowed,
