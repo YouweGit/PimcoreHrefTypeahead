@@ -76,9 +76,6 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
     },
 
     getLayoutEdit: function () {
-        console.log('fieldconfig:');
-        console.log(this.fieldConfig);
-
         var show_trigger = false;
         if(typeof this.fieldConfig.showTrigger != "undefined") {   // compatible with older versions' configs that don't have this setting!
            if(this.fieldConfig.showTrigger) {
