@@ -16,6 +16,9 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
+    PimcoreHrefTypeaheadBundle\Service\SearchBuilder: ~
+    PimcoreHrefTypeaheadBundle\Service\SearchService: ~
+
 # add more services, or override services that need manual wiring
 #    PimcoreHrefTypeaheadBundle\ExampleClass:
 #        arguments:

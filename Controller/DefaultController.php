@@ -26,7 +26,7 @@ class DefaultController extends AdminController
     /**
      * @Route("/find")
      */
-    public function findAction(Request $request)
+    public function findAction(Request $request, SearchBuilder $searchBuilder)
     {
         $sourceId = $request->get('sourceId');
         $sourceClassName = $request->get('className');
@@ -77,7 +77,7 @@ class DefaultController extends AdminController
         $filter = $request->get('filter') ? \Zend_Json::decode($request->get('filter')) : null;
         $considerChildTags = $request->get('considerChildTags') === 'true';
         $sortingSettings = \Pimcore\Admin\Helper\QueryParams::extractSortingSettings($request->request->all());
-        $searchService = SearchBuilder::create()
+        $searchService = $searchBuilder->create()
             ->withUser($this->getAdminUser())
             ->withTypes(['object'])
             ->withSubTypes(['object'])
@@ -87,6 +87,7 @@ class DefaultController extends AdminController
             ->withLimit((int) $request->get('limit'))
             ->withFields( $request->get('fields'))
             ->withFilter($filter)
+            ->withSourceObject($source)
             ->withTagIds( $request->get('tagIds'))
             ->withConsiderChildTags($considerChildTags)
             ->withSortSettings($sortingSettings)

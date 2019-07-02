@@ -9,6 +9,8 @@ use Pimcore\Model\DataObject;
 use Pimcore\Model\Search\Backend;
 use Pimcore\Model\Search\Backend\Data;
 use Pimcore\Model\User;
+use PimcoreHrefTypeaheadBundle\Event\HreftypeaheadSearchEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class SearchService
@@ -17,31 +19,40 @@ use Pimcore\Model\User;
 class SearchService
 {
 
-    /** @var  array */
+    /** @var array */
     private $types;
-    /** @var  array */
+    /** @var array */
     private $subTypes;
-    /** @var  User */
+    /** @var User */
     private $user;
-    /** @var  array */
+    /** @var array */
     private $classNames;
-    /** @var  string */
+    /** @var string */
     private $query;
-    /** @var  int */
+    /** @var int */
     private $start;
-    /** @var  int */
+    /** @var int */
     private $limit;
-    /** @var  array */
+    /** @var array */
     private $fields;
     /** @var array */
     private $filter;
-    /** @var  array */
+    /** @var DataObject\Concrete */
+    private $sourceObject;
+    /** @var array */
     private $tagIds;
-    /** @var  bool */
+    /** @var bool */
     private $considerChildTags;
     private $sortSettings;
 
-    public function __construct(SearchBuilder $searchBuilder)
+    /* @var EventDispatcherInterface */
+    private $dispatcher;
+
+    public function __construct(EventDispatcherInterface $dispatcher) {
+        $this->dispatcher = $dispatcher;
+    }
+
+    public function fromBuilder(SearchBuilder $searchBuilder)
     {
         if ($searchBuilder->getUser() === null || !$searchBuilder->getUser() instanceof User) {
             throw new \InvalidArgumentException('Missing user or invalid, please review what we passed to SearchBuilder class');
@@ -65,6 +76,7 @@ class SearchService
         $this->tagIds = $searchBuilder->getTagIds();
         $this->considerChildTags = $searchBuilder->isConsiderChildTags();
         $this->sortSettings = $searchBuilder->getSortSettings();
+        $this->sourceObject = $searchBuilder->getSourceObject();
 
         // Force subtype to obj, var, folder when all objects are allowed
         /** @noinspection NotOptimalIfConditionsInspection */
@@ -201,6 +213,8 @@ class SearchService
 
         //filtering for tags
         $conditionParts = $this->appendTagConditions($conditionParts);
+
+        $this->dispatcher->dispatch('hreftypeahead.search', new HreftypeaheadSearchEvent($this->sourceObject, $conditionParts));
 
         if (count($conditionParts) > 0) {
             $condition = implode(' AND ', $conditionParts);
