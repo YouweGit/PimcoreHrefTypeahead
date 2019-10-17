@@ -2,18 +2,18 @@
 
 namespace PimcoreHrefTypeaheadBundle\Controller;
 
-use Pimcore\Bundle\AdminBundle\Controller\AdminController;
-use Pimcore\Tool;
+use PimcoreHrefTypeaheadBundle\Model\DataObject\Data\HrefTypeahead;
 use PimcoreHrefTypeaheadBundle\Service\SearchBuilder;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-
+use Pimcore\Bundle\AdminBundle\Controller\AdminController;
+use Pimcore\Bundle\AdminBundle\Helper\QueryParams;
 use Pimcore\Logger;
 use Pimcore\Model\Element;
 use Pimcore\Model\Element\AbstractElement;
 use Pimcore\Model\DataObject;
-use PimcoreHrefTypeaheadBundle\Model\DataObject\Data\HrefTypeahead;
+use Pimcore\Tool;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class DefaultController
@@ -76,7 +76,7 @@ class DefaultController extends AdminController
         }
         $filter = $request->get('filter') ? \Zend_Json::decode($request->get('filter')) : null;
         $considerChildTags = $request->get('considerChildTags') === 'true';
-        $sortingSettings = \Pimcore\Admin\Helper\QueryParams::extractSortingSettings($request->request->all());
+        $sortingSettings = QueryParams::extractSortingSettings($request->request->all());
         $searchService = $searchBuilder
             ->withUser($this->getAdminUser())
             ->withTypes(['object'])
