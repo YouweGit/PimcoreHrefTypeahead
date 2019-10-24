@@ -13,6 +13,7 @@ use Pimcore\Logger;
 use Pimcore\Model\Element;
 use Pimcore\Model\Element\AbstractElement;
 use Pimcore\Model\DataObject;
+use Pimcore\Model\DataObject\ClassDefinition\Helper\PathFormatterResolver;
 use PimcoreHrefTypeaheadBundle\Model\DataObject\Data\HrefTypeahead;
 
 /**
@@ -147,7 +148,9 @@ class DefaultController extends AdminController
         }
         if (method_exists($fd, 'getPathFormatterClass')) {
             $formatterClass = $fd->getPathFormatterClass();
-            if ( Tool::classExists($formatterClass)) {
+            $formatter = PathFormatterResolver::resolvePathFormatter($formatterClass);
+
+            if ($formatter) {
                 $key = Element\Service::getType($element) . '_' . $element->getId();
                 $target = [
                     $key => [
@@ -161,15 +164,15 @@ class DefaultController extends AdminController
                     ]
                 ];
                 $result = [];
-                $result = call_user_func($formatterClass . '::formatPath', $result, $source, $target,
+
+                $result = $formatter->formatPath($result, $source, $target,
                     [
                         'fd' => $fd,
-                        // "context" => $context
                     ]);
-                $result = current($result);
-                return $result;
+
+                return current($result);
             } else {
-                Logger::error('Formatter Class does not exist: ' . $formatterClass);
+                Logger::error('Formatter Class does not exist: ' . $formatter);
             }
         }
         // Fall back to whatever the string representation would be
