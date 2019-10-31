@@ -10,6 +10,7 @@ use Pimcore\Logger;
 use Pimcore\Model\Element;
 use Pimcore\Model\Element\AbstractElement;
 use Pimcore\Model\DataObject;
+use Pimcore\Model\DataObject\ClassDefinition\Helper\PathFormatterResolver;
 use Pimcore\Tool;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
