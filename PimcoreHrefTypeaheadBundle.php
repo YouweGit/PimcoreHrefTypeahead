@@ -3,9 +3,16 @@
 namespace PimcoreHrefTypeaheadBundle;
 
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
+use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
 
 class PimcoreHrefTypeaheadBundle extends AbstractPimcoreBundle
 {
+    use PackageVersionTrait;
+
+    protected function getComposerPackageName()
+    {
+        return 'youwe/pimcore-href-typeahead';
+    } 
 
     public function getJsPaths()
     {
