@@ -2,7 +2,6 @@
 
 namespace PimcoreHrefTypeaheadBundle\Controller;
 
-use PimcoreHrefTypeaheadBundle\Model\DataObject\Data\HrefTypeahead;
 use PimcoreHrefTypeaheadBundle\Service\SearchBuilder;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use Pimcore\Bundle\AdminBundle\Helper\QueryParams;
@@ -10,7 +9,6 @@ use Pimcore\Logger;
 use Pimcore\Model\Element;
 use Pimcore\Model\Element\AbstractElement;
 use Pimcore\Model\DataObject;
-use Pimcore\Model\DataObject\ClassDefinition\Helper\PathFormatterResolver;
 use Pimcore\Tool;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,38 +30,40 @@ class DefaultController extends AdminController
         $sourceId = $request->get('sourceId');
         $sourceClassName = $request->get('className');
         $valueIds = $request->get('valueIds');
-        $fieldName = $request->get('fieldName');
+        $formatterClass = $request->get('formatterClass');
+        $className = $request->get('class');
         $source = null;
+
         // We know what object it is and we can get its type by id
         if ($sourceId) {
             $source = DataObject\Concrete::getById($sourceId);
         } elseif ($sourceClassName) { // We dont know what type it is by we know its class, strange but nice-path requires a specific source object
             $classFullName = "\\Pimcore\\Model\\DataObject\\$sourceClassName";
-            $source = new $classFullName();
+
+            if (Tool::classExists($classFullName)) {
+                $source = new $classFullName();
+            }
         }
+
         // Don`t do anything without valid source object
-        if (!$source || !$fieldName) {
+        if (!$source) {
             return $this->adminJson(['data' => [], 'success' => false, 'total' => 0]);
         }
 
-        /** @var HrefTypeahead $fd */
-        $fd = $source->getClass()->getFieldDefinition($fieldName);
-        if (!$fd || !$fd->getFieldtype() === 'hrefTypeahead' || !$fd->getObjectsAllowed() || count($fd->getClasses()) !== 1) {
-            throw new \InvalidArgumentException('This function can only be called from hrefTypeahead field with one class attached');
-        }
-        $className = current($fd->getClasses())['classes'];
         // This is a special case when the field is loaded for the first time or they are loaded from
         if ($valueIds) {
             $valueObjs = [];
             foreach (explode_and_trim(',', $valueIds) as $valueId) {
                 $valueObjs[] = DataObject\Concrete::getById($valueId);
             }
+
             if (!$valueObjs) {
                 return $this->adminJson(['data' => [], 'success' => false, 'total' => 0]);
             }
+
             $elements = [];
             foreach ($valueObjs as $valueObj) {
-                $label = $this->getNicePath($fd, $valueObj, $source);
+                $label = $this->getNicePath($formatterClass, $valueObj, $source);
                 $elements[] = $this->formatElement($valueObj, $label);
             }
 
@@ -75,6 +75,7 @@ class DefaultController extends AdminController
         elseif (!$valueIds && $request->get('valueIds')) {
             return $this->adminJson(['data' => [], 'success' => false, 'total' => 0]);
         }
+
         $filter = $request->get('filter') ? \Zend_Json::decode($request->get('filter')) : null;
         $considerChildTags = $request->get('considerChildTags') === 'true';
         $sortingSettings = QueryParams::extractSortingSettings($request->request->all());
@@ -93,22 +94,26 @@ class DefaultController extends AdminController
             ->withConsiderChildTags($considerChildTags)
             ->withSortSettings($sortingSettings)
             ->build();
+
         $searcherList = $searchService->getListingObject();
+
         /** @var \Pimcore\Model\Search\Backend\Data[] $hits */
         $hits = $searcherList->load();
         $elements = [];
+
         foreach ($hits as $hit) {
             /** @var AbstractElement $element */
             $element = Element\Service::getElementById($hit->getId()->getType(), $hit->getId()->getId());
             if ($element->isAllowed('list')) {
                 if ($element->getType() === 'object') {
-                    $label = $this->getNicePath($fd, $element, $source);
+                    $label = $this->getNicePath($formatterClass, $element, $source);
                 } else {
                     $label = (string)$element;
                 }
                 $elements[] = $this->formatElement($element, $label);
             }
         }
+
         // only get the real total-count when the limit parameter is given otherwise use the default limit
         if ($request->get('limit')) {
             $totalMatches = $searcherList->getTotalCount();
@@ -135,22 +140,24 @@ class DefaultController extends AdminController
             'nicePathKey' => Element\Service::getType($element) . '_' . $element->getId(),
         ];
     }
+
     /**
-     * @param DataObject\ClassDefinition\Data $fd
+     * @param string $formatterClass
      * @param AbstractElement $element
      * @param DataObject\Concrete $source
      * @return array|mixed
      */
-    private function getNicePath($fd, $element, $source)
+    private function getNicePath($formatterClass, $element, $source)
     {
         if (!$element) {
             return null;
         }
-        if (method_exists($fd, 'getPathFormatterClass')) {
-            $formatterClass = $fd->getPathFormatterClass();
-            $formatter = PathFormatterResolver::resolvePathFormatter($formatterClass);
 
-            if ($formatter) {
+        if ($formatterClass) {
+            if (
+                Tool::classExists($formatterClass) &&
+                is_a($formatterClass, DataObject\ClassDefinition\PathFormatterInterface::class, true)
+            ) {
                 $key = Element\Service::getType($element) . '_' . $element->getId();
                 $target = [
                     $key => [
@@ -163,18 +170,17 @@ class DefaultController extends AdminController
                         'nicePathKey' => $key,
                     ]
                 ];
+
                 $result = [];
+                $result = call_user_func($formatterClass . '::formatPath', $result, $source, $target, []);
+                $result = current($result);
 
-                $result = $formatter->formatPath($result, $source, $target,
-                    [
-                        'fd' => $fd,
-                    ]);
-
-                return current($result);
+                return $result;
             } else {
-                Logger::error('Formatter Class does not exist: ' . $formatter);
+                Logger::error('Formatter Class does not exist: ' . $formatterClass);
             }
         }
+
         // Fall back to whatever the string representation would be
         return (string)$element;
     }
