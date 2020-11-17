@@ -68,6 +68,7 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
                 extraParams: {
                     fieldName: this.fieldConfig.name,
                     sourceId: this.object.id,
+                    formatterClass: this.fieldConfig.pathFormatterClass,
                     class: classParam
                 }
             },
@@ -78,9 +79,9 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
     getLayoutEdit: function () {
         var show_trigger = false;
         if(typeof this.fieldConfig.showTrigger != "undefined") {   // compatible with older versions' configs that don't have this setting!
-           if(this.fieldConfig.showTrigger) {
-               show_trigger = true;
-           }
+            if(this.fieldConfig.showTrigger) {
+                show_trigger = true;
+            }
         }
 
         var hrefTypeahead = {
@@ -156,11 +157,11 @@ pimcore.object.tags.hrefTypeahead = Class.create(pimcore.object.tags.abstract, {
                 this.data.type    = newRecord.data.type;
                 this.data.subtype = newRecord.data.subtype;
             }
-            
+
             if (this.dataChanged && this.fieldConfig.listeners != undefined && {}.toString.call(this.fieldConfig.listeners.change) === '[object Function]'){
                 this.fieldConfig.listeners.change(combobox, newValue, oldValue);
             }
-            
+
         }.bind(this));
 
         var items = [this.component, {
