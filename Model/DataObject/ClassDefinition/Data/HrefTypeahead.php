@@ -1,7 +1,6 @@
 <?php
 
-namespace PimcoreHrefTypeaheadBundle\Model\DataObject\Data;
-
+namespace PimcoreHrefTypeaheadBundle\Model\DataObject\ClassDefinition\Data;
 
 use Pimcore\Model;
 use Pimcore\Model\Asset;
