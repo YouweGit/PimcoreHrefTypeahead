@@ -10,9 +10,9 @@ use Pimcore\Model\Element;
 use Pimcore\Model\Element\AbstractElement;
 use Pimcore\Model\DataObject;
 use Pimcore\Tool;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class DefaultController
@@ -23,6 +23,8 @@ use Symfony\Component\HttpFoundation\Response;
 class DefaultController extends AdminController
 {
     /**
+     * @param Request $request
+     * @param SearchBuilder $searchBuilder
      * @Route("/find")
      */
     public function findAction(Request $request, SearchBuilder $searchBuilder)
