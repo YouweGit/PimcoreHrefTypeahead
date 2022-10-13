@@ -34,22 +34,35 @@ class DefaultController extends AdminController
         $valueIds = $request->get('valueIds');
         $formatterClass = $request->get('formatterClass');
         $className = $request->get('class');
-        $source = null;
+        $fieldName = $request->get('fieldName'); // fieldName used to find field definition if needed
 
-        // We know what object it is and we can get its type by id
-        if ($sourceId) {
-            $source = DataObject\Concrete::getById($sourceId);
-        } elseif ($sourceClassName) { // We dont know what type it is by we know its class, strange but nice-path requires a specific source object
+        $source = null;
+        $sourceClass = null;
+
+        // Get a sourceClass if given a sourceClassName
+        if ($sourceClassName) {
             $classFullName = "\\Pimcore\\Model\\DataObject\\$sourceClassName";
 
             if (Tool::classExists($classFullName)) {
-                $source = new $classFullName();
+                $sourceClass = new $classFullName();
             }
         }
+
+        // If we have a sourceId, grab source through the id. Otherwise, set source to be our sourceClass (which is null if it doesn't exist)
+        $source = $sourceId ? DataObject\Concrete::getById($sourceId) : $sourceClass;
 
         // Don`t do anything without valid source object
         if (!$source) {
             return $this->adminJson(['data' => [], 'success' => false, 'total' => 0]);
+        }
+
+        // If there is a sourceClass, fieldName, and we are still missing a className, then grab the className from the allowedClasses in definition
+        if ($sourceClass && $fieldName && !$className) {
+            $allowedClasses = $sourceClass->getClass()->getFieldDefinition($fieldName)->getClasses();
+
+            if (count($allowedClasses) > 0 && isset($allowedClasses[0]['classes'])) {
+                $className = $allowedClasses[0]['classes'];
+            }
         }
 
         // This is a special case when the field is loaded for the first time or they are loaded from
