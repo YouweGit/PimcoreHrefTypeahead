@@ -214,7 +214,7 @@ class SearchService
         //filtering for tags
         $conditionParts = $this->appendTagConditions($conditionParts);
 
-        $this->dispatcher->dispatch(HreftypeaheadSearchEvent::SEARCH_EVENT, new HreftypeaheadSearchEvent($this->sourceObject, $conditionParts));
+        $this->dispatcher->dispatch(new HreftypeaheadSearchEvent($this->sourceObject, $conditionParts), HreftypeaheadSearchEvent::SEARCH_EVENT);
 
         if (count($conditionParts) > 0) {
             $condition = implode(' AND ', $conditionParts);
@@ -269,7 +269,8 @@ class SearchService
 
                 return $forbiddenConditions;
             } else {
-                $forbiddenAssetPaths = Element\Service::findForbiddenPaths('asset', $this->user);
+                $assetPaths = Element\Service::findForbiddenPaths('asset', $this->user);
+                $forbiddenAssetPaths = $assetPaths['forbidden'];
                 if (count($forbiddenAssetPaths) > 0) {
                     /** @noinspection CallableInLoopTerminationConditionInspection */
                     for ($i = 0; $i < count($forbiddenAssetPaths); $i++) {
@@ -300,7 +301,8 @@ class SearchService
 
                 return $forbiddenConditions;
             } else {
-                $forbiddenDocumentPaths = Element\Service::findForbiddenPaths('document', $this->user);
+                $documentPaths = Element\Service::findForbiddenPaths('document', $this->user);
+                $forbiddenDocumentPaths = $documentPaths['forbidden'];
                 if (count($forbiddenDocumentPaths) > 0) {
                     /** @noinspection CallableInLoopTerminationConditionInspection */
                     for ($i = 0; $i < count($forbiddenDocumentPaths); $i++) {
@@ -331,7 +333,8 @@ class SearchService
 
                 return $forbiddenConditions;
             } else {
-                $forbiddenObjectPaths = Element\Service::findForbiddenPaths('object', $this->user);
+                $objectPaths = Element\Service::findForbiddenPaths('object', $this->user);
+                $forbiddenObjectPaths = $objectPaths['forbidden'];
                 if (count($forbiddenObjectPaths) > 0) {
                     /** @noinspection CallableInLoopTerminationConditionInspection */
                     for ($i = 0; $i < count($forbiddenObjectPaths); $i++) {

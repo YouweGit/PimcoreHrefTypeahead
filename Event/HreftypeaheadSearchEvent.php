@@ -15,9 +15,9 @@
 namespace PimcoreHrefTypeaheadBundle\Event;
 
 use Pimcore\Model\DataObject;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\GenericEvent;
 
-class HreftypeaheadSearchEvent extends Event
+class HreftypeaheadSearchEvent extends GenericEvent
 {
     const SEARCH_EVENT = 'hreftypeahead.search';
 
