@@ -6,8 +6,9 @@ use Pimcore\Model;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Document;
 use Pimcore\Model\Element;
+use Pimcore\Model\DataObject\ClassDefinition\Data\ManyToOneRelation;
 
-class HrefTypeahead extends Model\DataObject\ClassDefinition\Data\Href
+class HrefTypeahead extends ManyToOneRelation
 {
     /**
      * Static type of this element
